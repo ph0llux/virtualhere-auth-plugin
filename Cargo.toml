@@ -1,5 +1,5 @@
 [package]
-name = "virtualhere_auth_plugin"
+name = "virtualhere-auth-plugin"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.70.0"
@@ -11,7 +11,7 @@ keywords = ["security", "virtualhere"]
 categories = ["command-line-utilities"]
 
 [[bin]]
-name = "virtualhere_auth_plugin"
+name = "virtualhere-auth-plugin"
 path = "src/main.rs"
 test = true
 bench = true
