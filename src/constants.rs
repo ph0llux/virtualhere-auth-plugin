@@ -1,6 +1,6 @@
 pub(crate) const DEFAULT_HASH_LENGTH: u32 = 32;
-pub(crate) const EXIT_STATUS_ERROR: i32 = 1;
-pub(crate) const EXIT_STATUS_SUCCESS: i32 = 0;
+pub(crate) const EXIT_STATUS_ERROR: i32 = 2;
+pub(crate) const EXIT_STATUS_SUCCESS: i32 = 1;
 
 pub(crate) const ARGON_MEM_COST_RECOMMENDED: u32 = 10000;
 pub(crate) const ARGON_LANES_RECOMMENDED: u32 = 4;

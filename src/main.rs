@@ -115,6 +115,7 @@ fn main() {
     env_logger::builder()
     .format_timestamp_nanos()
     .filter_module(TOOL_NAME, LevelFilter::Debug)
+    .target(env_logger::Target::Stdout)
     .init(); 
 
     match &args.command {
@@ -137,7 +138,7 @@ fn disconnect(nickname: String, sn: String, vendor: String, product: String, ip:
 
 fn connect<C: AsRef<Path>, P: Into<String>>(password_file: C, password: P, nickname: String, sn: String, vendor: String, product: String, ip: String) {
     let password = password.into();
-    let mut file = open_password_file(password_file.as_ref());
+    let mut file = open_password_file_ro(password_file.as_ref());
     let mut password_hash = String::new();
     if let Err(e) =  file.read_to_string(&mut password_hash) {
         error!("An error occurred while trying to read password file: {}: {e}", password_file.as_ref().display());
@@ -181,14 +182,26 @@ fn set_password(args: &Cli) {
         _ => unreachable!() 
     };
 
-    let mut file = open_password_file(&args.password_file);
+    let mut file = open_password_file_rw(&args.password_file);
     if let Err(e) = file.write(pw_hash.as_bytes()) {
         error!("An error occurred while trying to write password hash to file: {}: {e}", args.password_file.display());
         exit(EXIT_STATUS_ERROR);
     }
 }
 
-fn open_password_file<C: AsRef<Path>>(password_file: C) -> File {
+fn open_password_file_ro<C: AsRef<Path>>(password_file: C) -> File {
+    match OpenOptions::new()
+            .read(true)
+            .open(password_file.as_ref()) {
+        Ok(file) => file,
+        Err(e) => {
+            error!("An error occurred while trying to open password_file {}: {e}", password_file.as_ref().display());
+            exit(EXIT_STATUS_ERROR);
+        }
+    }
+}
+
+fn open_password_file_rw<C: AsRef<Path>>(password_file: C) -> File {
     match OpenOptions::new()
             .read(true)
             .write(true)
